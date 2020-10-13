@@ -7,7 +7,8 @@ public class ParkingList {
     private final List<Car> parkingList;
     private final Integer maxSize;
 
-    // EFFECTS: constructs a list of cars parked
+    // REQUIRES: maxSize > 0
+    // EFFECTS: constructs a list of cars parked with maximum allowed size of maxSize
     public ParkingList(Integer maxSize) {
         parkingList = new ArrayList<>();
         this.maxSize = maxSize;
@@ -43,8 +44,8 @@ public class ParkingList {
     }
 
 
-    // REQUIRES: the car exits in the list
-    // EFFECTS: returns the car record with the given licenseNum
+    // EFFECTS: looks for car with given licenseNum and if found, returns the car record,
+    //          otherwise, returns null
     public Car getCar(String licenseNum) {
         for (Car car: parkingList) {
             if (car.getLicenseNum().equals(licenseNum)) {

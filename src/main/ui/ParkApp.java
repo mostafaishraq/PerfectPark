@@ -46,16 +46,14 @@ public class ParkApp {
         System.out.println("\nTo get started, please input the following in the order stated:");
         System.out.println("\t1. maximum capacity of the parking");
         System.out.println("\t2. rate of charge ($/hour)");
-        System.out.println("\t3. minimum hours for discount");
+        System.out.println("\t3. minimum hour(s) for discount");
         System.out.println("\t4. discount percentage");
 
         Integer maxCapacity = input.nextInt();
         rate = input.nextDouble();
         minDiscountHours = input.nextInt();
         discountPercentage = input.nextDouble();
-
         parkingList = new ParkingList(maxCapacity);
-
     }
 
     // EFFECTS:
@@ -99,51 +97,71 @@ public class ParkApp {
 
     // EFFECTS:
     private void doEntry() {
-        System.out.println("Enter the license plate number of the car that is entering:");
-        String licenseNum = input.next();
-        System.out.println("Enter the current time as HH:MM (24-hour clock):");
-        String startTime = input.next();
-        System.out.println("Enter today's date as MM-DD-YYYY:");
-        String startDate = input.next();
+        if (parkingList.getNumberEmptySlots() == 0) {
+            System.out.println("Sorry, parking is full! Please ask the car to park somewhere else.");
+        } else {
+            System.out.println("Enter the license plate number of the car that is entering:");
+            String licenseNum = input.next();
+            System.out.println("Enter the current time as HH:MM (24-hour clock):");
+            String startTime = input.next();
+            System.out.println("Enter today's date as MM-DD-YYYY:");
+            String startDate = input.next();
 
-        Car car = new Car(licenseNum, startTime, startDate, rate);
+            Car car = new Car(licenseNum, startTime, startDate, rate);
 
-        parkingList.addCar(car);
+            parkingList.addCar(car);
 
-        System.out.println("Car has been added to a parking spot.");
+            System.out.println("Car has been added to a parking spot.");
+        }
     }
 
     // EFFECTS:
     private void doExit() {
-        System.out.println("Enter the license plate number of the car that is exiting:");
-        String licenseNum = input.next();
+        boolean keepGoing = true;
+        String licenseNum = null;
+        while (keepGoing) {
+            System.out.println("Enter the license plate number of the car that is exiting:");
+            licenseNum = input.next();
+            
+            if (parkingList.getCar(licenseNum) == null) {
+                System.out.println("Sorry, there is no car with this license plate! Please try again.");
+            } else {
+                keepGoing = false;
+            }
+        }
         System.out.println("Enter the current time as HH:MM (24-hour clock):");
         String endTime = input.next();
         System.out.println("Enter today's date as MM-DD-YYYY:");
         String endDate = input.next();
 
         Car car = parkingList.getCar(licenseNum);
-
         displayPrice(car, endTime, endDate);
-
         parkingList.removeCar(car);
-
         System.out.println("Car has been removed from the parking spot.");
     }
 
     //EFFECTS:
     public void doParkedHours() {
-        System.out.println("Enter the license plate number of the car parked:");
-        String licenceNum = input.next();
+        boolean keepGoing = true;
+        String licenseNum = null;
+        while (keepGoing) {
+            System.out.println("Enter the license plate number of the car that is exiting:");
+            licenseNum = input.next();
+
+            if (parkingList.getCar(licenseNum) == null) {
+                System.out.println("Sorry, there is no car with this license plate! Please try again.");
+            } else {
+                keepGoing = false;
+            }
+        }
         System.out.println("Enter the current time as HH:MM (24-hour clock):");
         String endTime = input.next();
         System.out.println("Enter today's date as MM-DD-YYYY:");
         String endDate = input.next();
 
-        Car car = parkingList.getCar(licenceNum);
+        Car car = parkingList.getCar(licenseNum);
         Integer totalHours = car.getHoursParked(endTime, endDate);
-
-        System.out.println("This car has been parked for " + totalHours + " hours.");
+        System.out.println("This car has been parked for " + totalHours + " hour(s).");
     }
 
     // EFFECTS:
@@ -156,10 +174,10 @@ public class ParkApp {
 
     // EFFECTS:
     public void doChangeMinDiscountHours() {
-        System.out.println("Enter the new minimum number of hours needed for discount:");
+        System.out.println("Enter the new minimum number of hour(s) needed for discount:");
         minDiscountHours = input.nextInt();
 
-        System.out.println("The minimum hal-hours for discount is set to " + minDiscountHours);
+        System.out.println("The minimum hour(s) for discount is set to " + minDiscountHours);
     }
 
     // EFFECTS:
@@ -180,7 +198,7 @@ public class ParkApp {
             System.out.println("Discount has been applied of " + discountPercentage + "%.");
         }
 
-        System.out.println("The total cost for this car is " + totalCost);
+        System.out.println("The total cost for this car is $" + totalCost);
     }
 
 }

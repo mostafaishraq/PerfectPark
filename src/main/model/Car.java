@@ -7,6 +7,7 @@ public class Car {
     private final String startDate;
     private final Double rate;
 
+    // REQUIRES: startTime is in format HH:MM and startDate is in format MM-DD-YYYY
     // EFFECTS:
     public Car(String licenseNum, String startTime, String startDate, Double rate) {
         this.licenseNum = licenseNum;
@@ -20,22 +21,22 @@ public class Car {
         return licenseNum;
     }
 
-    // EFFECTS: returns the start time of the car
+    // EFFECTS: returns the time when the car started parking
     public String getStartTime() {
         return startTime;
     }
 
-    // EFFECTS:
+    // EFFECTS: returns the hour of the day when the car started parking
     public Integer getStartHour() {
         return Integer.parseInt(startTime.substring(0, 2));
     }
 
-    //EFFECTS:
+    //EFFECTS: returns the date when the car started parking
     public String getStartDate() {
         return startDate;
     }
 
-    // EFFECTS:
+    // EFFECTS: returns the day of month when the car started parking
     public Integer getStartDay() {
         return Integer.parseInt(startDate.substring(3, 5));
     }
