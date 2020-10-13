@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParkingList {
-    private final List<Car> parkingList;
-    private final Integer maxSize;
+    private final List<Car> parkingList;    // list of parked cars
+    private final Integer maxSize;          // maximum number of cars the parking can accommodate
 
     // REQUIRES: maxSize > 0
     // EFFECTS: constructs a list of cars parked with maximum allowed size of maxSize

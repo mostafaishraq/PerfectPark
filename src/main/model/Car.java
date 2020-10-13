@@ -2,13 +2,15 @@ package model;
 
 
 public class Car {
-    private final String licenseNum;
-    private final String startTime;
-    private final String startDate;
-    private final Double rate;
+    private final String licenseNum;   // license plate number of car
+    private final String startTime;    // time of entry of car in HH:MM
+    private final String startDate;    // date of entry of car in MM-DD-YYYY
+    private final Double rate;         // rate of charge for this car
 
     // REQUIRES: startTime is in format HH:MM and startDate is in format MM-DD-YYYY
-    // EFFECTS:
+    // EFFECTS: constructs a car object, license number of car is set to licenseNum,
+    //          time of entry is set to startTime, date of entry is set to startDate,
+    //          and rate of charge for the car is set to rate
     public Car(String licenseNum, String startTime, String startDate, Double rate) {
         this.licenseNum = licenseNum;
         this.startTime = startTime;

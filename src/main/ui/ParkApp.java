@@ -6,6 +6,7 @@ import model.ParkingList;
 
 import java.util.Scanner;
 
+//parking management application
 public class ParkApp {
     private ParkingList parkingList;
     private Scanner input;
@@ -13,10 +14,13 @@ public class ParkApp {
     private Integer minDiscountHours;
     private Double discountPercentage;
 
+    // EFFECTS: runs the parking management application
     public ParkApp() {
         runParkApp();
     }
 
+    // MODIFIES: this
+    // EFFECTS: processes user input
     private void runParkApp() {
         boolean keepGoing = true;
         String command;
@@ -36,7 +40,8 @@ public class ParkApp {
         System.out.println("\nGoodbye!");
     }
 
-    // EFFECTS:
+    // MODIFIES: this
+    // EFFECTS: initializes parking list and other variables from input
     private void init() {
         input = new Scanner(System.in);
 
@@ -56,7 +61,7 @@ public class ParkApp {
         parkingList = new ParkingList(maxCapacity);
     }
 
-    // EFFECTS:
+    // EFFECTS: displays menu of options to enter
     private void displayOptions() {
         System.out.println("\nPlease choose from the following:");
         System.out.println("\t1 -> to enter a car entering the parking.");
@@ -68,7 +73,8 @@ public class ParkApp {
         System.out.println("\t7 -> to quit");
     }
 
-    //EFFECTS:
+    // MODIFIES: this
+    // EFFECTS: processes user command
     private void processCommand(String command) {
         switch (command) {
             case "1":
@@ -95,7 +101,8 @@ public class ParkApp {
         }
     }
 
-    // EFFECTS:
+    // MODIFIES: this
+    // EFFECTS: enters a car record into parking list
     private void doEntry() {
         if (parkingList.getNumberEmptySlots() == 0) {
             System.out.println("Sorry, parking is full! Please ask the car to park somewhere else.");
@@ -115,7 +122,8 @@ public class ParkApp {
         }
     }
 
-    // EFFECTS:
+    /// MODIFIES: this
+    // EFFECTS: removes a car record from parking list and shows total price
     private void doExit() {
         boolean keepGoing = true;
         String licenseNum = null;
@@ -140,12 +148,12 @@ public class ParkApp {
         System.out.println("Car has been removed from the parking spot.");
     }
 
-    //EFFECTS:
+    //EFFECTS: displays the number of hours a car with given license plate has been parked for
     public void doParkedHours() {
         boolean keepGoing = true;
         String licenseNum = null;
         while (keepGoing) {
-            System.out.println("Enter the license plate number of the car that is exiting:");
+            System.out.println("Enter the license plate number of the car:");
             licenseNum = input.next();
 
             if (parkingList.getCar(licenseNum) == null) {
@@ -164,7 +172,8 @@ public class ParkApp {
         System.out.println("This car has been parked for " + totalHours + " hour(s).");
     }
 
-    // EFFECTS:
+    // MODIFIES: this
+    // EFFECTS: changes the rate of charge to the user input value
     public void doChangeRate() {
         System.out.println("Enter the new rate of charge ($/hour):");
         rate = input.nextDouble();
@@ -172,7 +181,8 @@ public class ParkApp {
         System.out.println("The rate has been set to " + rate + " $/hour");
     }
 
-    // EFFECTS:
+    // MODIFIES: this
+    // EFFECTS: changes the minimum hours needed for discount to the user input value
     public void doChangeMinDiscountHours() {
         System.out.println("Enter the new minimum number of hour(s) needed for discount:");
         minDiscountHours = input.nextInt();
@@ -180,7 +190,8 @@ public class ParkApp {
         System.out.println("The minimum hour(s) for discount is set to " + minDiscountHours);
     }
 
-    // EFFECTS:
+    // MODIFIES: this
+    // EFFECTS: changes the discount percentage to the user input value
     public void doChangeDiscountPercentage() {
         System.out.println("Enter the new discount percentage:");
         discountPercentage = input.nextDouble();
@@ -188,10 +199,17 @@ public class ParkApp {
         System.out.println("The discount percentage is set to " + discountPercentage + "%.");
     }
 
-    // EFFECTS:
+    // EFFECTS: displays the total cost of car that is exiting parking
     private void displayPrice(Car car, String endTime, String endDate) {
+        Double totalCost;
 
-        double totalCost = car.getHoursParked(endTime, endDate) * car.getRate();
+        if (car.getHoursParked(endTime, endDate) == 0) {
+            totalCost = car.getRate();
+        } else {
+            totalCost = car.getHoursParked(endTime, endDate) * car.getRate();
+        }
+
+
 
         if (car.getHoursParked(endTime, endDate) >= minDiscountHours) {
             totalCost = totalCost * ((100 - discountPercentage) / 100);
