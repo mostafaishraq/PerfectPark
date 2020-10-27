@@ -1,7 +1,10 @@
 package model;
 
 
-public class Car {
+import org.json.JSONObject;
+import persistence.Writable;
+
+public class Car implements Writable {
     private final String licenseNum;   // license plate number of car
     private final String startTime;    // time of entry of car in HH:MM
     private final String startDate;    // date of entry of car in MM-DD-YYYY
@@ -59,6 +62,16 @@ public class Car {
         } else {
             return endHour - this.getStartHour() + 24;
         }
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("licenseNum", licenseNum);
+        json.put("startDate", startDate);
+        json.put("startTime", startTime);
+        json.put("rate", rate);
+        return json;
     }
 
 }

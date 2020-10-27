@@ -35,3 +35,7 @@ and parking is not full.
 and view its total cost when the car is leaving the parking.
 - As a user, I want to be able to set and change the minimum number of hours for discount and the discount percentage.
 - As a user, I want to be able to change the rate of charge (in $/hour).
+- As a user, I want to be able to save the parking list, maximum capacity of parking, rate of charge, minimum
+hours for discount, and the discount percentage to a file. 
+- As a user, I want to be able to load the parking list, maximum capacity of parking, rate of charge, minimum 
+hours for discount, and the discount percentage from the file. 

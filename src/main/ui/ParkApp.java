@@ -3,19 +3,30 @@ package ui;
 import model.Car;
 import model.ParkingList;
 
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 //parking management application
 public class ParkApp {
+    private static final String JSON_STORE = "./data/parkinglist.json";
     private ParkingList parkingList;
     private Scanner input;
     private Double rate;
     private Integer minDiscountHours;
     private Double discountPercentage;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
-    // EFFECTS: runs the parking management application
+    // EFFECTS: constructs parking list and runs the parking management application
     public ParkApp() {
+        input = new Scanner(System.in);
+        parkingList = new ParkingList(0, 0.00, 0, 0.00);
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
         runParkApp();
     }
 
@@ -30,7 +41,7 @@ public class ParkApp {
         while (keepGoing) {
             displayOptions();
             command = input.next();
-            if (command.equals("7")) {
+            if (command.equals("8")) {
                 keepGoing = false;
             } else {
                 processCommand(command);
@@ -44,21 +55,37 @@ public class ParkApp {
     // EFFECTS: initializes parking list and other variables from input
     private void init() {
         input = new Scanner(System.in);
-
+        boolean keepGoing = true;
         System.out.println("\nWelcome to PerfectPark!");
         System.out.println("REMEMBER: No car is parked for more than 24 hours.");
         System.out.println("Cars parked for > 24 hours are automatically penalised and removed by authority.");
+        while (keepGoing) {
+            System.out.println("Do you want to load an exiting parking list? Enter y or n.");
+            String command = input.next();
+            if (command.equals("y")) {
+                doLoadParkingList();
+                keepGoing = false;
+            } else if (command.equals("n")) {
+                displayInitialOptions();
+                Integer maxCapacity = input.nextInt();
+                rate = input.nextDouble();
+                minDiscountHours = input.nextInt();
+                discountPercentage = input.nextDouble();
+                parkingList = new ParkingList(maxCapacity, rate, minDiscountHours, discountPercentage);
+                keepGoing = false;
+            } else {
+                System.out.println("Selection not valid...");
+            }
+        }
+    }
+
+    // EFFECTS: displays initial menu of options to enter
+    private void displayInitialOptions() {
         System.out.println("\nTo get started, please input the following in the order stated:");
         System.out.println("\t1. maximum capacity of the parking");
         System.out.println("\t2. rate of charge ($/hour)");
         System.out.println("\t3. minimum hour(s) for discount");
         System.out.println("\t4. discount percentage");
-
-        Integer maxCapacity = input.nextInt();
-        rate = input.nextDouble();
-        minDiscountHours = input.nextInt();
-        discountPercentage = input.nextDouble();
-        parkingList = new ParkingList(maxCapacity);
     }
 
     // EFFECTS: displays menu of options to enter
@@ -70,30 +97,27 @@ public class ParkApp {
         System.out.println("\t4 -> to change the rate");
         System.out.println("\t5 -> to change minimum parking time for discount");
         System.out.println("\t6 -> to change the discount percentage");
-        System.out.println("\t7 -> to quit");
+        System.out.println("\t7 -> to save the parking list to file");
+        System.out.println("\t8 -> to quit");
     }
 
     // MODIFIES: this
     // EFFECTS: processes user command
     private void processCommand(String command) {
         switch (command) {
-            case "1":
-                doEntry();
+            case "1": doEntry();
                 break;
-            case "2":
-                doExit();
+            case "2": doExit();
                 break;
-            case "3":
-                doParkedHours();
+            case "3": doParkedHours();
                 break;
-            case "4":
-                doChangeRate();
+            case "4": doChangeRate();
                 break;
-            case "5":
-                doChangeMinDiscountHours();
+            case "5": doChangeMinDiscountHours();
                 break;
-            case "6":
-                doChangeDiscountPercentage();
+            case "6": doChangeDiscountPercentage();
+                break;
+            case "7": doSaveParkingList();
                 break;
             default:
                 System.out.println("Selection not valid...");
@@ -177,6 +201,7 @@ public class ParkApp {
     public void doChangeRate() {
         System.out.println("Enter the new rate of charge ($/hour):");
         rate = input.nextDouble();
+        parkingList.setRate(rate);
 
         System.out.println("The rate has been set to " + rate + " $/hour");
     }
@@ -186,6 +211,7 @@ public class ParkApp {
     public void doChangeMinDiscountHours() {
         System.out.println("Enter the new minimum number of hour(s) needed for discount:");
         minDiscountHours = input.nextInt();
+        parkingList.setMinDiscountHours(minDiscountHours);
 
         System.out.println("The minimum hour(s) for discount is set to " + minDiscountHours);
     }
@@ -195,8 +221,32 @@ public class ParkApp {
     public void doChangeDiscountPercentage() {
         System.out.println("Enter the new discount percentage:");
         discountPercentage = input.nextDouble();
+        parkingList.setDiscountPercentage(discountPercentage);
 
         System.out.println("The discount percentage is set to " + discountPercentage + "%.");
+    }
+
+    // EFFECTS: saves the parking list to file
+    private void doSaveParkingList() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(parkingList);
+            jsonWriter.close();
+            System.out.println("Saved parking list to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads parking list from file
+    private void doLoadParkingList() {
+        try {
+            parkingList = jsonReader.read();
+            System.out.println("Loaded previous parking list from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
+        }
     }
 
     // EFFECTS: displays the total cost of car that is exiting parking

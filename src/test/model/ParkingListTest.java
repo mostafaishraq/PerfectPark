@@ -10,7 +10,7 @@ public class ParkingListTest {
 
     @BeforeEach
     void runBefore() {
-        parkingList = new ParkingList(10);
+        parkingList = new ParkingList(10, 5.00, 3, 10.00);
     }
 
     @Test
