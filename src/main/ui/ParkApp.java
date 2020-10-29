@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
-//parking management application
+//Represents a parking management application
 public class ParkApp {
     private static final String JSON_STORE = "./data/parkinglist.json";
     private ParkingList parkingList;
@@ -56,11 +56,11 @@ public class ParkApp {
     private void init() {
         input = new Scanner(System.in);
         boolean keepGoing = true;
-        System.out.println("\nWelcome to PerfectPark!");
-        System.out.println("REMEMBER: No car is parked for more than 24 hours.");
-        System.out.println("Cars parked for > 24 hours are automatically penalised and removed by authority.");
+        System.out.println("\nWelcome To PerfectPark!");
+        System.out.println("\n---REMEMBER: NO CAR IS PARKED FOR MORE THAN 24 HOURS---");
+        System.out.println("---Cars parked for > 24 hours are automatically penalised and removed by authority---");
         while (keepGoing) {
-            System.out.println("Do you want to load an exiting parking list? Enter y or n.");
+            System.out.println("\nDo you want to load an existing parking list? Enter 'y' for yes and 'n' for no:");
             String command = input.next();
             if (command.equals("y")) {
                 doLoadParkingList();

@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class JsonReaderTest extends JsonTest {
 
+    // testReaderNonExistentFile() taken from https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     @Test
     void testReaderNonExistentFile() {
         JsonReader reader = new JsonReader("./data/noSuchFile.json");
@@ -23,6 +24,7 @@ public class JsonReaderTest extends JsonTest {
         }
     }
 
+    // testReaderEmptyParkingList() taken from https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     @Test
     void testReaderEmptyParkingList() {
         JsonReader reader = new JsonReader("./data/testReaderEmptyParkingList.json");
@@ -39,6 +41,7 @@ public class JsonReaderTest extends JsonTest {
         }
     }
 
+    // testReaderGeneralWorkRoom() taken from https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     @Test
     void testReaderGeneralWorkRoom() {
         JsonReader reader = new JsonReader("./data/testReaderGeneralParkingList.json");
@@ -51,7 +54,7 @@ public class JsonReaderTest extends JsonTest {
             List<Car> cars = pl.getCars();
             assertEquals(2, cars.size());
             checkCar("ABC123", "10:10", "10-10-2020", 4.50, cars.get(0));
-            checkCar("XYZ321", "20:20", "10-10-2020", 4.50, cars.get(1));
+            checkCar("XYZ321", "20:20", "10-20-2020", 5.50, cars.get(1));
         } catch (IOException e) {
             fail("Couldn't read from file");
         }

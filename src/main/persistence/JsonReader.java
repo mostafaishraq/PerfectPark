@@ -15,12 +15,14 @@ public class JsonReader {
     private final String source;
 
     // EFFECTS: constructs reader to read from source file
+    // JsonReader(String source) taken from https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     public JsonReader(String source) {
         this.source = source;
     }
 
     // EFFECTS: reads parking list from file and returns it;
     // throws IOException if an error occurs reading data from file
+    // read() taken from https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     public ParkingList read() throws IOException {
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);
@@ -28,6 +30,7 @@ public class JsonReader {
     }
 
     // EFFECTS: reads source file as string and returns it
+    // readFile(String source) taken from https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     private String readFile(String source) throws IOException {
         StringBuilder contentBuilder = new StringBuilder();
 
@@ -39,6 +42,8 @@ public class JsonReader {
     }
 
     // EFFECTS: parses parking list from JSON object and returns it
+    // parseParkingList(JSONObject jsonObject) taken from
+    // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     private ParkingList parseParkingList(JSONObject jsonObject) {
         Integer maxSize = jsonObject.getInt("maxSize");
         Double rate = jsonObject.getDouble("rate");
@@ -49,8 +54,10 @@ public class JsonReader {
         return pl;
     }
 
-    // MODIFIES: wr
-    // EFFECTS: parses thingies from JSON object and adds them to workroom
+    // MODIFIES: pl
+    // EFFECTS: parses cars from JSON object and adds them to parking list
+    // addCars(ParkingList pl, JSONObject jsonObject) taken from
+    // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     private void addCars(ParkingList pl, JSONObject jsonObject) {
         JSONArray jsonArray = jsonObject.getJSONArray("cars");
         for (Object json : jsonArray) {
@@ -59,8 +66,10 @@ public class JsonReader {
         }
     }
 
-    // MODIFIES: wr
-    // EFFECTS: parses thingy from JSON object and adds it to workroom
+    // MODIFIES: pl
+    // EFFECTS: parses car from JSON object and adds it to parking list
+    // addCar(ParkingList pl, JSONObject jsonObject) taken from
+    // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     private void addCar(ParkingList pl, JSONObject jsonObject) {
         String licenseNum = jsonObject.getString("licenseNum");
         String startTime = jsonObject.getString("startTime");

@@ -8,6 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Unit tests for the ParkingList class
 public class ParkingListTest {
     ParkingList parkingList;
 

@@ -40,11 +40,11 @@ hours for discount, and the discount percentage) to a file.
 - As a user, I want to be able to load the parking list (including its maximum capacity of parking, rate of charge, minimum 
 hours for discount, and the discount percentage) from the file. 
 
+
 ##Citation:
 - Author: Paul Carter 
 - Date: 17 October 2020
 - Title of program/source code
-- Type Source Code
+- Type: Source Code
 - Code version: 1.0
 - Availability: https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo 
-

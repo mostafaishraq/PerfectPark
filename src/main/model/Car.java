@@ -4,6 +4,7 @@ package model;
 import org.json.JSONObject;
 import persistence.Writable;
 
+// Represents a car having a license number, start time, start date and rate of charge
 public class Car implements Writable {
     private final String licenseNum;   // license plate number of car
     private final String startTime;    // time of entry of car in HH:MM
@@ -36,7 +37,7 @@ public class Car implements Writable {
         return Integer.parseInt(startTime.substring(0, 2));
     }
 
-    //EFFECTS: returns the date when the car started parking
+    // EFFECTS: returns the date when the car started parking
     public String getStartDate() {
         return startDate;
     }
