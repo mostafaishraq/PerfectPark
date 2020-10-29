@@ -35,7 +35,16 @@ and parking is not full.
 and view its total cost when the car is leaving the parking.
 - As a user, I want to be able to set and change the minimum number of hours for discount and the discount percentage.
 - As a user, I want to be able to change the rate of charge (in $/hour).
-- As a user, I want to be able to save the parking list, maximum capacity of parking, rate of charge, minimum
-hours for discount, and the discount percentage to a file. 
-- As a user, I want to be able to load the parking list, maximum capacity of parking, rate of charge, minimum 
-hours for discount, and the discount percentage from the file. 
+- As a user, I want to be able to save the parking list (including its maximum capacity of parking, rate of charge, minimum
+hours for discount, and the discount percentage) to a file. 
+- As a user, I want to be able to load the parking list (including its maximum capacity of parking, rate of charge, minimum 
+hours for discount, and the discount percentage) from the file. 
+
+##Citation:
+- Author: Paul Carter 
+- Date: 17 October 2020
+- Title of program/source code
+- Type Source Code
+- Code version: 1.0
+- Availability: https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo 
+

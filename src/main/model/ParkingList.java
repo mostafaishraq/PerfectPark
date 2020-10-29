@@ -61,9 +61,25 @@ public class ParkingList implements Writable {
     }
 
 
-    //EFFECTS: returns the number of empty parking spots
+    // EFFECTS: returns the number of empty parking spots
     public Integer getNumberEmptySlots() {
         return maxSize - parkingList.size();
+    }
+
+    // EFFECTS: returns the rate of charge of parking
+    public Double getRate() {
+        return rate;
+    }
+
+    // EFFECTS: returns the minimum hours of discount of parking
+    public Integer getMinDiscountHours() {
+        return minDiscountHours;
+    }
+
+
+    // EFFECTS: returns the discount percentage of parking
+    public Double getDiscountPercentage() {
+        return discountPercentage;
     }
 
 
@@ -77,6 +93,12 @@ public class ParkingList implements Writable {
         }
         return null;
     }
+
+    // EFFECTS: return the list of cars parked
+    public List<Car> getCars() {
+        return parkingList;
+    }
+
 
     @Override
     public JSONObject toJson() {

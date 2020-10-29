@@ -244,6 +244,10 @@ public class ParkApp {
         try {
             parkingList = jsonReader.read();
             System.out.println("Loaded previous parking list from " + JSON_STORE);
+            System.out.println("Number of empty spots left  = " + parkingList.getNumberEmptySlots());
+            System.out.println("Rate of charge = " + parkingList.getRate());
+            System.out.println("Minimum hours for discount = " + parkingList.getMinDiscountHours());
+            System.out.println("Discount percentage = " + parkingList.getDiscountPercentage());
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }

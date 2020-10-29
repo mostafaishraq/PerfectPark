@@ -1,8 +1,8 @@
 {
-    "discountPercentage": 10,
+    "discountPercentage": 12,
     "cars": [{
         "rate": 5,
-        "licenseNum": "1234",
+        "licenseNum": "ABC123",
         "startTime": "10:10",
         "startDate": "10-10-2020"
     }],

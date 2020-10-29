@@ -3,6 +3,9 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParkingListTest {
@@ -81,5 +84,32 @@ public class ParkingListTest {
         assertNull(car2);
 
         assertEquals(1, 10 - parkingList.getNumberEmptySlots());
+    }
+
+    @Test
+    void testSetRate() {
+        parkingList.setRate(7);
+        assertEquals(7.00, parkingList.getRate());
+    }
+
+    @Test
+    void testSetMinDiscountHours() {
+        parkingList.setMinDiscountHours(4);
+        assertEquals(4, parkingList.getMinDiscountHours());
+    }
+
+    @Test
+    void testSetDiscountPercentage() {
+        parkingList.setDiscountPercentage(12.00);
+        assertEquals(12.00, parkingList.getDiscountPercentage());
+    }
+
+    @Test
+    void testGetCars() {
+        Car car = new Car("A", "10:10", "10-10-2020", 5.00);
+        assertTrue(parkingList.addCar(car));
+        List<Car> cars = new ArrayList<>();
+        cars.add(car);
+        assertEquals(cars,parkingList.getCars());
     }
 }
