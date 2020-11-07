@@ -33,6 +33,8 @@ authorities in Chittagong in managing their parking facilities easily and effici
 and parking is not full.
 - As a user, I want to be able to remove a car record from the parking list 
 and view its total cost when the car is leaving the parking.
+- As a user, I want to be able to view how long a specific car has been parked for.
+- As a user, I want to be able to view a list of the license numbers of the cars parked. 
 - As a user, I want to be able to set and change the minimum number of hours for discount and the discount percentage.
 - As a user, I want to be able to change the rate of charge (in $/hour).
 - As a user, I want to be able to save the parking list (including its maximum capacity of parking, rate of charge, minimum

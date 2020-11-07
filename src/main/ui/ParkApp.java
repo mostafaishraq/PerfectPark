@@ -8,6 +8,7 @@ import persistence.JsonWriter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 //Represents a parking management application
@@ -41,7 +42,7 @@ public class ParkApp {
         while (keepGoing) {
             displayOptions();
             command = input.next();
-            if (command.equals("8")) {
+            if (command.equals("9")) {
                 keepGoing = false;
             } else {
                 processCommand(command);
@@ -94,11 +95,12 @@ public class ParkApp {
         System.out.println("\t1 -> to enter a car entering the parking.");
         System.out.println("\t2 -> to remove a car exiting the parking.");
         System.out.println("\t3 -> to check how long a car has been parked");
-        System.out.println("\t4 -> to change the rate");
-        System.out.println("\t5 -> to change minimum parking time for discount");
-        System.out.println("\t6 -> to change the discount percentage");
-        System.out.println("\t7 -> to save the parking list to file");
-        System.out.println("\t8 -> to quit");
+        System.out.println("\t4 -> to see the list of cars parked");
+        System.out.println("\t5 -> to change the rate");
+        System.out.println("\t6 -> to change minimum parking time for discount");
+        System.out.println("\t7 -> to change the discount percentage");
+        System.out.println("\t8 -> to save the parking list to file");
+        System.out.println("\t9 -> to quit");
     }
 
     // MODIFIES: this
@@ -111,13 +113,15 @@ public class ParkApp {
                 break;
             case "3": doParkedHours();
                 break;
-            case "4": doChangeRate();
+            case "4": doShowList();
                 break;
-            case "5": doChangeMinDiscountHours();
+            case "5": doChangeRate();
                 break;
-            case "6": doChangeDiscountPercentage();
+            case "6": doChangeMinDiscountHours();
                 break;
-            case "7": doSaveParkingList();
+            case "7": doChangeDiscountPercentage();
+                break;
+            case "8": doSaveParkingList();
                 break;
             default:
                 System.out.println("Selection not valid...");
@@ -196,6 +200,17 @@ public class ParkApp {
         System.out.println("This car has been parked for " + totalHours + " hour(s).");
     }
 
+
+    public void doShowList() {
+        List<Car> carList = parkingList.getCars();
+        if (carList.isEmpty()) {
+            System.out.println("No cars parked right now");
+        }
+        for (Car c : carList) {
+            System.out.println("Car " + (carList.indexOf(c) + 1) + ": " + c.getLicenseNum());
+        }
+    }
+
     // MODIFIES: this
     // EFFECTS: changes the rate of charge to the user input value
     public void doChangeRate() {
@@ -265,9 +280,9 @@ public class ParkApp {
 
 
 
-        if (car.getHoursParked(endTime, endDate) >= minDiscountHours) {
-            totalCost = totalCost * ((100 - discountPercentage) / 100);
-            System.out.println("Discount has been applied of " + discountPercentage + "%.");
+        if (car.getHoursParked(endTime, endDate) >= parkingList.getMinDiscountHours()) {
+            totalCost = totalCost * ((100 - parkingList.getDiscountPercentage()) / 100);
+            System.out.println("Discount has been applied of " + parkingList.getDiscountPercentage() + "%.");
         }
 
         System.out.println("The total cost for this car is $" + totalCost);
