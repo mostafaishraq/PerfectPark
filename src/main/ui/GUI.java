@@ -12,7 +12,11 @@ import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.AudioSystem;
 
+// Represents the graphical user interface of the parking management application
 public class GUI extends JFrame implements ActionListener {
     private static final Color BACKGROUND_COLOR = new Color(94, 134, 132);
 
@@ -49,14 +53,19 @@ public class GUI extends JFrame implements ActionListener {
     private final JsonWriter jsonWriter = new JsonWriter(JSON_STORE);
     private final JsonReader jsonReader = new JsonReader(JSON_STORE);
 
+    public static void main(String[] args) {
+        new GUI();
+    }
+
+    // EFFECTS: runs the main menu
     public GUI() {
         mainMenu();
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays the window for the main menu
     private void mainMenu() {
         makePanel();
-        topPanel = new JPanel();
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         buttonLeft = new JButton("Load previous parking list");
         buttonLeft.setPreferredSize(new Dimension(200,50));
@@ -80,157 +89,11 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
-    public static void main(String[] args) {
-        new GUI();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        frame.dispose();
-        String command = e.getActionCommand();
-
-
-        if (command.equals("newList")) {
-            doNewParkingList();
-        } else {
-            if (command.equals("loadList")) {
-                doLoadParkingList();
-            } else if (command.equals("afterNew")) {
-                actionAfterNew();
-            } else {
-                actionMenu(command);
-            }
-            doSaveParkingList();
-        }
-    }
-
-    private void actionAfterNew() {
-        Integer maxCapacity = Integer.parseInt(fieldMaxCapacity.getText());
-        rate = Double.parseDouble(fieldRate.getText());
-        minDiscountHours = Integer.parseInt(fieldMinHour.getText());
-        discountPercentage = Double.parseDouble(fieldDiscount.getText());
-        parkingList = new ParkingList(maxCapacity, rate, minDiscountHours, discountPercentage);
-        doMenu();
-    }
-    
-    private void actionMenu(String command) {
-        if ((command.equals("menu"))) {
-            doMenu();
-        } else if ((command.equals("entry"))) {
-            doEntry();
-        } else if ((command.equals("exit"))) {
-            doExit();
-        } else if ((command.equals("viewHour"))) {
-            doViewHour();
-        } else if ((command.equals("parkedHour"))) {
-            actionParkedHour();
-        } else if ((command.equals("viewList"))) {
-            doViewList();
-        } else if ((command.equals("addCar"))) {
-            actionAddCar();
-        } else if ((command.equals("removeCar"))) {
-            actionRemoveCar();
-        } else if ((command.equals("mainMenu"))) {
-            mainMenu();
-        } else {
-            actionChange(command);
-        }
-    }
-    
-    private void actionChange(String command) {
-        if ((command.equals("changeRate"))) {
-            doChangeRate();
-        } else if ((command.equals("changeMinHour"))) {
-            doChangeMinHour();
-        } else if ((command.equals("changeDiscount"))) {
-            doChangeDiscount();
-        } else if ((command.equals("setRate"))) {
-            actionSetRate();
-        } else if ((command.equals("setMinHour"))) {
-            actionSetMinHour();
-        } else if ((command.equals("setDiscount"))) {
-            actionSetDiscount();
-        }
-    }
-
-    private void actionAddCar() {
-        rate = parkingList.getRate();
-        Car car = new Car(fieldCarLicense.getText(), fieldCarStartT.getText(), fieldCarStartD.getText(), rate);
-        parkingList.addCar(car);
-        makePanel();
-        topPanel = new JPanel(new GridLayout(2, 1));
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-        label = new JLabel(fieldCarLicense.getText() + " has been added to a parking spot");
-        label.setFont(font);
-        buttonContinue.setActionCommand("menu");
-        buttonContinue.addActionListener(this);
-
-        topPanel.add(label);
-        bottomPanel.add(buttonContinue);
-
-        panel.add(topPanel, BorderLayout.NORTH);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
-
-        makeFrame();
-    }
-
-    private void actionRemoveCar() {
-        String licenseNum = fieldCarLicense.getText();
-        if (parkingList.getCar(licenseNum) == null) {
-            label = new JLabel("Sorry, there is no car with this license plate! Please try again.");
-            label.setFont(font);
-            panel.add(label);
-            makeFrame();
-        } else {
-            Car car = parkingList.getCar(licenseNum);
-            parkingList.removeCar(car);
-            doDisplayPrice(car, fieldCarStartT.getText(), fieldCarStartD.getText());
-        }
-    }
-
-    private void actionParkedHour() {
-        String licenseNum = fieldCarLicense.getText();
-        if (parkingList.getCar(licenseNum) == null) {
-            label = new JLabel("Sorry, there is no car with this license plate! Please try again.");
-            label.setFont(font);
-            panel.add(label);
-        } else {
-            makePanel();
-            panel.setLayout(new GridLayout(2,1));
-            Car car = parkingList.getCar(licenseNum);
-            Integer totalHours = car.getHoursParked(fieldCarStartT.getText(), fieldCarStartD.getText());
-            label = new JLabel("This car has been parked for " + totalHours + " hour(s).");
-            label.setFont(font);
-            panel.add(label);
-            panel.add(buttonContinue);
-        }
-        makeFrame();
-    }
-    
-    private void actionSetRate() {
-        rate = Double.parseDouble(fieldRate.getText());
-        parkingList.setRate(rate);
-        doMenu();
-    }
-    
-    private void actionSetMinHour() {
-        minDiscountHours = Integer.parseInt(fieldRate.getText());
-        parkingList.setMinDiscountHours(minDiscountHours);
-        doMenu();
-    }
-
-    private void actionSetDiscount() {
-        discountPercentage = Double.parseDouble(fieldRate.getText());
-        parkingList.setDiscountPercentage(discountPercentage);
-        doMenu();
-    }
-
+    // MODIFIES: this
+    // EFFECTS: displays the window for new parking list
     private void doNewParkingList() {
         makePanel();
-        topPanel = new JPanel(new GridLayout(5, 1));
-        bottomPanel = new JPanel();
-
+        topPanel.setLayout(new GridLayout(5, 1));
 
         topPanelNewList();
 
@@ -245,6 +108,8 @@ public class GUI extends JFrame implements ActionListener {
 
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the top panel of new list window
     private void topPanelNewList() {
         
 
@@ -271,6 +136,8 @@ public class GUI extends JFrame implements ActionListener {
         topPanel.add(fieldDiscount);
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays the window for loading parking list
     private void doLoadParkingList() {
         try {
             parkingList = jsonReader.read();
@@ -278,10 +145,6 @@ public class GUI extends JFrame implements ActionListener {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
         makePanel();
-
-        topPanel = new JPanel();
-        bottomPanel = new JPanel();
-
 
         buttonContinue.setActionCommand("menu");
         buttonContinue.addActionListener(this);
@@ -295,6 +158,8 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the top panel of load list window
     private void topPanelLoadList() {
         String labelString = "<html>Loaded previous parking list...<br><br>";
         labelString += "Number of empty spots left  = " + parkingList.getNumberEmptySlots() + "<br>";
@@ -308,6 +173,8 @@ public class GUI extends JFrame implements ActionListener {
         topPanel.add(label);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the top panel of menu
     private void doMenu() {
         makePanel();
         panel.setLayout(new GridLayout(8, 2));
@@ -343,7 +210,9 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
 
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: sets up the buttons for menu window
     private void buttonsMenu() {
 
         buttonEntry.setActionCommand("entry");
@@ -377,7 +246,9 @@ public class GUI extends JFrame implements ActionListener {
         buttonMainMenu.setActionCommand("mainMenu");
         buttonMainMenu.addActionListener(this);
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: adds components to panel for menu window
     private void panelAddMenu(JLabel l1, JLabel l2,JLabel l3,JLabel l4,JLabel l5,JLabel l6,JLabel l7,JLabel l8) {
         panel.add(l1);
         panel.add(buttonEntry);
@@ -396,7 +267,9 @@ public class GUI extends JFrame implements ActionListener {
         panel.add(l8);
         panel.add(buttonMainMenu);
     }
-    
+
+    // MODIFIES: this
+    // EFFECTS: displays window for car entry
     private void doEntry() {
         makePanel();
         if (parkingList.getNumberEmptySlots() == 0) {
@@ -404,8 +277,7 @@ public class GUI extends JFrame implements ActionListener {
             label.setFont(new Font("Verdana", Font.BOLD, 30));
             panel.add(label);
         } else {
-            topPanel = new JPanel(new GridLayout(3, 1));
-            bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            topPanel.setLayout(new GridLayout(3, 1));
 
             buttonLeft = new JButton("Go Back");
             buttonLeft.setActionCommand("menu");
@@ -426,11 +298,12 @@ public class GUI extends JFrame implements ActionListener {
     }
 
 
+    // MODIFIES: this
+    // EFFECTS: displays window for car exit
     private void doExit() {
         makePanel();
 
-        topPanel = new JPanel(new GridLayout(3, 1));
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topPanel.setLayout(new GridLayout(3, 1));
 
         buttonLeft = new JButton("Go Back");
         buttonLeft.setActionCommand("menu");
@@ -449,7 +322,8 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
-
+    // MODIFIES: this
+    // EFFECTS: displays window for exiting car's price
     private void doDisplayPrice(Car car, String endTime, String endDate) {
         Double totalCost;
         Double discP = 0.00;
@@ -466,8 +340,7 @@ public class GUI extends JFrame implements ActionListener {
 
         makePanel();
 
-        topPanel = new JPanel(new GridLayout(2, 1));
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topPanel.setLayout(new GridLayout(2, 1));
 
         buttonContinue.setActionCommand("menu");
         buttonContinue.addActionListener(this);
@@ -481,6 +354,8 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates top panel of display price window
     private void topPanelPrice(Double discP, Double totalCost) {
         
         JLabel label1 = new JLabel("Discount has been applied of " + discP + "%.");
@@ -492,11 +367,12 @@ public class GUI extends JFrame implements ActionListener {
         topPanel.add(label2);
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays window for car's hour(s) parked
     private void doViewHour() {
         makePanel();
 
-        topPanel = new JPanel(new GridLayout(3, 1));
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topPanel.setLayout(new GridLayout(3, 1));
 
         buttonLeft = new JButton("Go Back");
         buttonLeft.setActionCommand("menu");
@@ -515,6 +391,8 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates top panel of entry, exit and view hour(s) windows
     private void topPanelEntryOrExitOrView() {
         
         JLabel label1 = new JLabel("Enter the license plate number of the car ");
@@ -536,10 +414,11 @@ public class GUI extends JFrame implements ActionListener {
         topPanel.add(fieldCarStartD);
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays window for list of cars parked
     private void doViewList() {
         makePanel();
-        topPanel = new JPanel();
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
         List<Car> carList = parkingList.getCars();
         String labelString = "<html>";
         if (carList.isEmpty()) {
@@ -566,12 +445,12 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays window for changing rate
     private void doChangeRate() {
         makePanel();
 
-        topPanel = new JPanel(new GridLayout(1,1));
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
+        topPanel.setLayout(new GridLayout(1,1));
         
         label = new JLabel("Enter the new rate of charge ($/hour): ");
         label.setFont(font);
@@ -594,13 +473,13 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays window for changing minimum hour(s) for discount
     private void doChangeMinHour() {
         makePanel();
 
-        topPanel = new JPanel(new GridLayout(1,1));
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topPanel.setLayout(new GridLayout(1,1));
 
-        
         label = new JLabel("<html>Enter the new minimum number of hour(s)<br>needed for discount: </html>");
         label.setFont(font);
         fieldRate = new JTextField(5);
@@ -622,12 +501,12 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays window for discount percentage
     private void doChangeDiscount() {
         makePanel();
 
-        topPanel = new JPanel(new GridLayout(1,1));
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
+        topPanel.setLayout(new GridLayout(1,1));
         
         label = new JLabel("Enter the new discount percentage :");
         label.setFont(font);
@@ -650,6 +529,7 @@ public class GUI extends JFrame implements ActionListener {
         makeFrame();
     }
 
+    // EFFECTS: saves the parking list to file
     private void doSaveParkingList() {
         try {
             jsonWriter.open();
@@ -660,6 +540,8 @@ public class GUI extends JFrame implements ActionListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates frame from panel
     private void makeFrame() {
         frame = new JFrame();
         frame.add(panel);
@@ -670,6 +552,8 @@ public class GUI extends JFrame implements ActionListener {
         frame.setVisible(true);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates panel
     private void makePanel() {
         panel = new JPanel(new BorderLayout());
 
@@ -678,6 +562,176 @@ public class GUI extends JFrame implements ActionListener {
 
         panel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
         panel.setBackground(BACKGROUND_COLOR);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        playSound("button.wav");
+        frame.dispose();
+        String command = e.getActionCommand();
+        if (command.equals("newList")) {
+            doNewParkingList();
+        } else {
+            if (command.equals("loadList")) {
+                doLoadParkingList();
+            } else if (command.equals("afterNew")) {
+                actionAfterNew();
+            } else {
+                actionMenu(command);
+            }
+            doSaveParkingList();
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: creates new parking list
+    private void actionAfterNew() {
+        Integer maxCapacity = Integer.parseInt(fieldMaxCapacity.getText());
+        rate = Double.parseDouble(fieldRate.getText());
+        minDiscountHours = Integer.parseInt(fieldMinHour.getText());
+        discountPercentage = Double.parseDouble(fieldDiscount.getText());
+        parkingList = new ParkingList(maxCapacity, rate, minDiscountHours, discountPercentage);
+        doMenu();
+    }
+
+    // EFFECTS: performs action for commands in menu window
+    private void actionMenu(String command) {
+        if ((command.equals("menu"))) {
+            doMenu();
+        } else if ((command.equals("entry"))) {
+            doEntry();
+        } else if ((command.equals("exit"))) {
+            doExit();
+        } else if ((command.equals("viewHour"))) {
+            doViewHour();
+        } else if ((command.equals("parkedHour"))) {
+            actionParkedHour();
+        } else if ((command.equals("viewList"))) {
+            doViewList();
+        } else if ((command.equals("addCar"))) {
+            actionAddCar();
+        } else if ((command.equals("removeCar"))) {
+            actionRemoveCar();
+        } else if ((command.equals("mainMenu"))) {
+            mainMenu();
+        } else {
+            actionChange(command);
+        }
+    }
+
+    // EFFECTS: performs action for commands in change windows
+    private void actionChange(String command) {
+        if ((command.equals("changeRate"))) {
+            doChangeRate();
+        } else if ((command.equals("changeMinHour"))) {
+            doChangeMinHour();
+        } else if ((command.equals("changeDiscount"))) {
+            doChangeDiscount();
+        } else if ((command.equals("setRate"))) {
+            actionSetRate();
+        } else if ((command.equals("setMinHour"))) {
+            actionSetMinHour();
+        } else if ((command.equals("setDiscount"))) {
+            actionSetDiscount();
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds car to parking list
+    private void actionAddCar() {
+        rate = parkingList.getRate();
+        Car car = new Car(fieldCarLicense.getText(), fieldCarStartT.getText(), fieldCarStartD.getText(), rate);
+        parkingList.addCar(car);
+        makePanel();
+        topPanel = new JPanel(new GridLayout(2, 1));
+        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        label = new JLabel(fieldCarLicense.getText() + " has been added to a parking spot");
+        label.setFont(font);
+        buttonContinue.setActionCommand("menu");
+        buttonContinue.addActionListener(this);
+
+        topPanel.add(label);
+        bottomPanel.add(buttonContinue);
+
+        panel.add(topPanel, BorderLayout.NORTH);
+        panel.add(bottomPanel, BorderLayout.SOUTH);
+
+        makeFrame();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: removes car from parking list
+    private void actionRemoveCar() {
+        String licenseNum = fieldCarLicense.getText();
+        if (parkingList.getCar(licenseNum) == null) {
+            label = new JLabel("Sorry, there is no car with this license plate! Please try again.");
+            label.setFont(font);
+            panel.add(label);
+            makeFrame();
+        } else {
+            Car car = parkingList.getCar(licenseNum);
+            parkingList.removeCar(car);
+            doDisplayPrice(car, fieldCarStartT.getText(), fieldCarStartD.getText());
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: displays window showing hours parked
+    private void actionParkedHour() {
+        String licenseNum = fieldCarLicense.getText();
+        if (parkingList.getCar(licenseNum) == null) {
+            label = new JLabel("Sorry, there is no car with this license plate! Please try again.");
+            label.setFont(font);
+            panel.add(label);
+        } else {
+            makePanel();
+            panel.setLayout(new GridLayout(2,1));
+            Car car = parkingList.getCar(licenseNum);
+            Integer totalHours = car.getHoursParked(fieldCarStartT.getText(), fieldCarStartD.getText());
+            label = new JLabel("This car has been parked for " + totalHours + " hour(s).");
+            label.setFont(font);
+            panel.add(label);
+            panel.add(buttonContinue);
+        }
+        makeFrame();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets rate to input
+    private void actionSetRate() {
+        rate = Double.parseDouble(fieldRate.getText());
+        parkingList.setRate(rate);
+        doMenu();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets minimum hour(s) for discount to input
+    private void actionSetMinHour() {
+        minDiscountHours = Integer.parseInt(fieldRate.getText());
+        parkingList.setMinDiscountHours(minDiscountHours);
+        doMenu();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets discount percentage to input
+    private void actionSetDiscount() {
+        discountPercentage = Double.parseDouble(fieldRate.getText());
+        parkingList.setDiscountPercentage(discountPercentage);
+        doMenu();
+    }
+
+    // EFFECTS: plays sound from file
+    public void playSound(String soundName) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.getClass().getResource(soundName));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
     }
 
 }
