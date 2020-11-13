@@ -34,14 +34,14 @@ public class GUI extends JFrame implements ActionListener {
     JTextField fieldCarStartD;
     JButton buttonLeft;
     JButton buttonRight;
-    JButton buttonEntry = new JButton("Enter Car");
-    JButton buttonExit = new JButton("Remove Car");
-    JButton buttonViewHour = new JButton("View Hour(s) Parked");
-    JButton buttonViewList = new JButton("View List");
-    JButton buttonChangeRate = new JButton("Change Rate ($/hour)");
-    JButton buttonChangeMinHour = new JButton("Change Minimum Hour(s)");
-    JButton buttonChangeDiscount = new JButton("Change Discount Percentage");
-    JButton buttonMainMenu = new JButton("Go to Main menu");
+    JButton buttonEntry;
+    JButton buttonExit;
+    JButton buttonViewHour;
+    JButton buttonViewList;
+    JButton buttonChangeRate;
+    JButton buttonChangeMinHour;
+    JButton buttonChangeDiscount;
+    JButton buttonMainMenu;
     JButton buttonContinue = new JButton("Continue");
 
     private static final String JSON_STORE = "./data/parkinglist.json";
@@ -71,6 +71,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft.setPreferredSize(new Dimension(200,50));
         buttonLeft.setActionCommand("loadList");
         buttonLeft.addActionListener(this);
+
         buttonRight = new JButton("Open new parking list");
         buttonRight.setPreferredSize(new Dimension(200,50));
         buttonRight.setActionCommand("newList");
@@ -97,8 +98,9 @@ public class GUI extends JFrame implements ActionListener {
 
         topPanelNewList();
 
-        buttonContinue.addActionListener(this);
+        buttonContinue = new JButton("Continue");
         buttonContinue.setActionCommand("afterNew");
+        buttonContinue.addActionListener(this);
         bottomPanel.add(buttonContinue);
 
         panel.add(topPanel, BorderLayout.NORTH);
@@ -146,6 +148,7 @@ public class GUI extends JFrame implements ActionListener {
         }
         makePanel();
 
+        buttonContinue = new JButton("Continue");
         buttonContinue.setActionCommand("menu");
         buttonContinue.addActionListener(this);
 
@@ -203,6 +206,7 @@ public class GUI extends JFrame implements ActionListener {
         JLabel label8 = new JLabel("Go to Main Menu");
         label8.setFont(font);
 
+        buttonMainMenu = new JButton("Go to Main Menu");
         buttonsMenu();
         
         panelAddMenu(label1, label2, label3, label4, label5, label6, label7, label8);
@@ -215,33 +219,33 @@ public class GUI extends JFrame implements ActionListener {
     // EFFECTS: sets up the buttons for menu window
     private void buttonsMenu() {
 
+        buttonEntry = new JButton("Enter Car");
         buttonEntry.setActionCommand("entry");
         buttonEntry.addActionListener(this);
 
-
+        buttonExit = new JButton("Remove Car");
         buttonExit.setActionCommand("exit");
         buttonExit.addActionListener(this);
 
-
+        buttonViewHour = new JButton("View Hour(s) Parked");
         buttonViewHour.setActionCommand("viewHour");
         buttonViewHour.addActionListener(this);
 
-
+        buttonViewList = new JButton("View List");
         buttonViewList.setActionCommand("viewList");
         buttonViewList.addActionListener(this);
 
-
+        buttonChangeRate = new JButton("Change Rate ($/hour)");
         buttonChangeRate.setActionCommand("changeRate");
         buttonChangeRate.addActionListener(this);
 
-
+        buttonChangeMinHour = new JButton("Change Minimum Hour(s)");
         buttonChangeMinHour.setActionCommand("changeMinHour");
         buttonChangeMinHour.addActionListener(this);
 
-
+        buttonChangeDiscount = new JButton("Change Discount Percentage");
         buttonChangeDiscount.setActionCommand("changeDiscount");
         buttonChangeDiscount.addActionListener(this);
-
 
         buttonMainMenu.setActionCommand("mainMenu");
         buttonMainMenu.addActionListener(this);
@@ -282,6 +286,7 @@ public class GUI extends JFrame implements ActionListener {
             buttonLeft = new JButton("Go Back");
             buttonLeft.setActionCommand("menu");
             buttonLeft.addActionListener(this);
+
             buttonRight = new JButton("Add Car");
             buttonRight.setActionCommand("addCar");
             buttonRight.addActionListener(this);
@@ -308,6 +313,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft = new JButton("Go Back");
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
+
         buttonRight = new JButton("Remove Car");
         buttonRight.setActionCommand("removeCar");
         buttonRight.addActionListener(this);
@@ -342,6 +348,7 @@ public class GUI extends JFrame implements ActionListener {
 
         topPanel.setLayout(new GridLayout(2, 1));
 
+        buttonContinue = new JButton("Continue");
         buttonContinue.setActionCommand("menu");
         buttonContinue.addActionListener(this);
 
@@ -377,6 +384,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft = new JButton("Go Back");
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
+
         buttonRight = new JButton("View Hour(s)");
         buttonRight.setActionCommand("parkedHour");
         buttonRight.addActionListener(this);
@@ -420,19 +428,22 @@ public class GUI extends JFrame implements ActionListener {
         makePanel();
 
         List<Car> carList = parkingList.getCars();
-        String labelString = "<html>";
+        StringBuilder labelString = new StringBuilder("<html>");
         if (carList.isEmpty()) {
-            labelString = "No cars parked right now";
+            labelString.append("No cars parked right now");
         }
         for (Car c : carList) {
-            labelString += "Car " + (carList.indexOf(c) + 1) + ": " + c.getLicenseNum() + "<br>";
+            labelString.append("Car ");
+            labelString.append(carList.indexOf(c) + 1);
+            labelString.append(": ");
+            labelString.append(c.getLicenseNum()).append("<br>");
         }
-        labelString += "</html>";
+        labelString.append("</html>");
         
-        label = new JLabel(labelString);
+        label = new JLabel(labelString.toString());
         label.setFont(font);
 
-
+        buttonContinue = new JButton("Continue");
         buttonContinue.setActionCommand("menu");
         buttonContinue.addActionListener(this);
 
@@ -458,6 +469,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft = new JButton("Go Back");
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
+
         buttonRight = new JButton("Change");
         buttonRight.setActionCommand("setRate");
         buttonRight.addActionListener(this);
@@ -486,6 +498,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft = new JButton("Go Back");
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
+
         buttonRight = new JButton("Change");
         buttonRight.setActionCommand("setMinHour");
         buttonRight.addActionListener(this);
@@ -514,6 +527,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft = new JButton("Go Back");
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
+
         buttonRight = new JButton("Change");
         buttonRight.setActionCommand("setDiscount");
         buttonRight.addActionListener(this);
@@ -574,24 +588,33 @@ public class GUI extends JFrame implements ActionListener {
         } else {
             if (command.equals("loadList")) {
                 doLoadParkingList();
+                doSaveParkingList();
             } else if (command.equals("afterNew")) {
                 actionAfterNew();
             } else {
                 actionMenu(command);
+                doSaveParkingList();
             }
-            doSaveParkingList();
         }
     }
 
     // MODIFIES: this
     // EFFECTS: creates new parking list
     private void actionAfterNew() {
-        Integer maxCapacity = Integer.parseInt(fieldMaxCapacity.getText());
-        rate = Double.parseDouble(fieldRate.getText());
-        minDiscountHours = Integer.parseInt(fieldMinHour.getText());
-        discountPercentage = Double.parseDouble(fieldDiscount.getText());
-        parkingList = new ParkingList(maxCapacity, rate, minDiscountHours, discountPercentage);
-        doMenu();
+        try {
+            Integer maxCapacity = Integer.parseInt(fieldMaxCapacity.getText());
+            rate = Double.parseDouble(fieldRate.getText());
+            minDiscountHours = Integer.parseInt(fieldMinHour.getText());
+            discountPercentage = Double.parseDouble(fieldDiscount.getText());
+            parkingList = new ParkingList(maxCapacity, rate, minDiscountHours, discountPercentage);
+            doSaveParkingList();
+            doMenu();
+        } catch (Exception e) {
+            label = new JLabel("Invalid input! Please try again.");
+            label.setFont(font);
+            panel.add(label);
+            makeFrame();
+        }
     }
 
     // EFFECTS: performs action for commands in menu window
@@ -641,22 +664,30 @@ public class GUI extends JFrame implements ActionListener {
     private void actionAddCar() {
         rate = parkingList.getRate();
         Car car = new Car(fieldCarLicense.getText(), fieldCarStartT.getText(), fieldCarStartD.getText(), rate);
-        parkingList.addCar(car);
-        makePanel();
-        topPanel = new JPanel(new GridLayout(2, 1));
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        if (!car.validate()) {
+            label = new JLabel("Invalid input! Please try again.");
+            label.setFont(font);
+            panel.add(label);
+        } else {
+            parkingList.addCar(car);
+            makePanel();
+            topPanel = new JPanel(new GridLayout(2, 1));
+            bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        label = new JLabel(fieldCarLicense.getText() + " has been added to a parking spot");
-        label.setFont(font);
-        buttonContinue.setActionCommand("menu");
-        buttonContinue.addActionListener(this);
+            label = new JLabel(fieldCarLicense.getText() + " has been added to a parking spot");
+            label.setFont(font);
 
-        topPanel.add(label);
-        bottomPanel.add(buttonContinue);
+            buttonContinue = new JButton("Continue");
+            buttonContinue.setActionCommand("menu");
+            buttonContinue.addActionListener(this);
 
-        panel.add(topPanel, BorderLayout.NORTH);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
+            topPanel.add(label);
+            bottomPanel.add(buttonContinue);
 
+            panel.add(topPanel, BorderLayout.NORTH);
+            panel.add(bottomPanel, BorderLayout.SOUTH);
+
+        }
         makeFrame();
     }
 
@@ -664,13 +695,15 @@ public class GUI extends JFrame implements ActionListener {
     // EFFECTS: removes car from parking list
     private void actionRemoveCar() {
         String licenseNum = fieldCarLicense.getText();
-        if (parkingList.getCar(licenseNum) == null) {
-            label = new JLabel("Sorry, there is no car with this license plate! Please try again.");
+        Car car = new Car(fieldCarLicense.getText(), fieldCarStartT.getText(), fieldCarStartD.getText(), rate);
+        if ((!car.validate()) || (parkingList.getCar(licenseNum) == null)) {
+            label = new JLabel("Invalid input! Please try again.");
             label.setFont(font);
             panel.add(label);
             makeFrame();
+            makeFrame();
         } else {
-            Car car = parkingList.getCar(licenseNum);
+            car = parkingList.getCar(licenseNum);
             parkingList.removeCar(car);
             doDisplayPrice(car, fieldCarStartT.getText(), fieldCarStartD.getText());
         }

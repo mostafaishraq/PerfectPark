@@ -65,6 +65,19 @@ public class Car implements Writable {
         }
     }
 
+    public boolean validate() {
+        try {
+            getStartHour();
+            Integer.parseInt(startTime.substring(3, 5));
+            getStartDay();
+            Integer.parseInt(startDate.substring(0, 2));
+            Integer.parseInt(startDate.substring(6, 10));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
