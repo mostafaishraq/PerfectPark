@@ -19,8 +19,8 @@ public class ParkApp {
     private Double rate;
     private Integer minDiscountHours;
     private Double discountPercentage;
-    private JsonWriter jsonWriter;
-    private JsonReader jsonReader;
+    private final JsonWriter jsonWriter;
+    private final JsonReader jsonReader;
 
     // EFFECTS: constructs parking list and runs the parking management application
     public ParkApp() {

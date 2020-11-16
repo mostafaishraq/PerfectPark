@@ -11,16 +11,18 @@ import static org.junit.jupiter.api.Assertions.*;
 // Unit tests for the ParkingList class
 public class ParkingListTest {
     ParkingList parkingList;
+    Car car;
 
     @BeforeEach
     void runBefore() {
         parkingList = new ParkingList(10, 5.00, 3, 10.00);
+        car = new Car("A", "10:10", "10-10-2020", 5.00);
     }
 
     @Test
     void testAddCarListNotFull() {
         for (int i = 0; i < 10; i++) {
-            Car car = new Car("A", "10:10", "10-10-2020", 5.00);
+
             assertTrue(parkingList.addCar(car));
             assertEquals(i+1, 10 - parkingList.getNumberEmptySlots());
         }
@@ -29,19 +31,19 @@ public class ParkingListTest {
     @Test
     void testAddCarListFull() {
         for (int i = 0; i < 10; i++) {
-            Car car = new Car("A", "10:10", "10-10-2020", 5.00);
+
             assertTrue(parkingList.addCar(car));
             assertEquals(i+1, 10 - parkingList.getNumberEmptySlots());
         }
 
-        Car car = new Car("A", "10:10", "10-10-2020", 5.00);
+
         assertFalse(parkingList.addCar(car));
         assertEquals(10,10 - parkingList.getNumberEmptySlots());
     }
 
     @Test
     void testRemoveCarExists() {
-        Car car = new Car("A", "10:10", "10-10-2020", 5.00);
+
         assertTrue(parkingList.addCar(car));
         assertEquals(1, 10 - parkingList.getNumberEmptySlots());
 
@@ -52,7 +54,7 @@ public class ParkingListTest {
 
     @Test
     void testRemoveCarDoesNotExist() {
-        Car car = new Car("A", "10:10", "10-10-2020", 5.00);
+
 
         assertEquals(0, 10 - parkingList.getNumberEmptySlots());
 
@@ -107,7 +109,7 @@ public class ParkingListTest {
 
     @Test
     void testGetCars() {
-        Car car = new Car("A", "10:10", "10-10-2020", 5.00);
+
         assertTrue(parkingList.addCar(car));
         List<Car> cars = new ArrayList<>();
         cars.add(car);

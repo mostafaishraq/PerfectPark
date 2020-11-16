@@ -1,6 +1,5 @@
 package model;
 
-
 import org.json.JSONObject;
 import persistence.Writable;
 
@@ -37,6 +36,11 @@ public class Car implements Writable {
         return Integer.parseInt(startTime.substring(0, 2));
     }
 
+    // EFFECTS: returns the min of the hour when the car started parking
+    public Integer getStartMin() {
+        return Integer.parseInt(startTime.substring(3, 5));
+    }
+
     // EFFECTS: returns the date when the car started parking
     public String getStartDate() {
         return startDate;
@@ -47,6 +51,7 @@ public class Car implements Writable {
         return Integer.parseInt(startDate.substring(3, 5));
     }
 
+
     // EFFECTS: returns the rate at which the car is charged
     public Double getRate() {
         return rate;
@@ -55,14 +60,39 @@ public class Car implements Writable {
     // ASSUMES: the car already parked in the parking
     // EFFECTS: returns the number of hours passed since the car was parked
     public Integer getHoursParked(String endTime, String endDate) {
-        Integer endHour = Integer.parseInt(endTime.substring(0, 2));
-        Integer endDay = Integer.parseInt(endDate.substring(3, 5));
+        int endHour = Integer.parseInt(endTime.substring(0, 2));
+        int endMin = Integer.parseInt(endTime.substring(3, 5));
+        int endDay = Integer.parseInt(endDate.substring(3, 5));
+        int totalHours;
 
         if (endDay - this.getStartDay() == 0) {
-            return endHour - this.getStartHour();
+            if (endMin < this.getStartMin()) {
+                totalHours = endHour - this.getStartHour() - 1;
+            } else {
+                totalHours = endHour - this.getStartHour();
+            }
         } else {
-            return endHour - this.getStartHour() + 24;
+            if (endMin < this.getStartMin()) {
+                totalHours = endHour - this.getStartHour() + (endDay - this.getStartDay()) * 24 - 1;
+            } else {
+                totalHours = endHour - this.getStartHour() + (endDay - this.getStartDay()) * 24;
+            }
         }
+
+        return totalHours;
+    }
+
+    public Double getTotalCost(String endTime, String endDate, ParkingList parkingList) {
+        Double totalCost;
+        if (this.getHoursParked(endTime, endDate) == 0) {
+            totalCost = this.getRate();
+        } else {
+            totalCost = this.getHoursParked(endTime, endDate) * this.getRate();
+        }
+        if (this.getHoursParked(endTime, endDate) >= parkingList.getMinDiscountHours()) {
+            totalCost = totalCost * ((100 - parkingList.getDiscountPercentage()) / 100);
+        }
+        return totalCost;
     }
 
     public boolean validate() {
@@ -87,5 +117,6 @@ public class Car implements Writable {
         json.put("rate", rate);
         return json;
     }
+
 
 }

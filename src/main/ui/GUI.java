@@ -30,8 +30,8 @@ public class GUI extends JFrame implements ActionListener {
     JTextField fieldMinHour;
     JTextField fieldDiscount;
     JTextField fieldCarLicense;
-    JTextField fieldCarStartT;
-    JTextField fieldCarStartD;
+    JTextField fieldCarTime;
+    JTextField fieldCarDate;
     JButton buttonLeft;
     JButton buttonRight;
     JButton buttonEntry;
@@ -42,7 +42,7 @@ public class GUI extends JFrame implements ActionListener {
     JButton buttonChangeMinHour;
     JButton buttonChangeDiscount;
     JButton buttonMainMenu;
-    JButton buttonContinue = new JButton("Continue");
+    JButton buttonContinue;
 
     private static final String JSON_STORE = "./data/parkinglist.json";
     Font font = new Font("Verdana", Font.PLAIN, 30);
@@ -98,10 +98,16 @@ public class GUI extends JFrame implements ActionListener {
 
         topPanelNewList();
 
-        buttonContinue = new JButton("Continue");
-        buttonContinue.setActionCommand("afterNew");
-        buttonContinue.addActionListener(this);
-        bottomPanel.add(buttonContinue);
+        buttonLeft = new JButton("Go Back");
+        buttonLeft.setActionCommand("backMainMenu");
+        buttonLeft.addActionListener(this);
+        buttonRight = new JButton("Continue");
+        buttonRight.setActionCommand("afterNew");
+        buttonRight.addActionListener(this);
+
+        bottomPanel.add(buttonLeft);
+        bottomPanel.add(buttonRight);
+
 
         panel.add(topPanel, BorderLayout.NORTH);
         panel.add(bottomPanel, BorderLayout.SOUTH);
@@ -331,19 +337,11 @@ public class GUI extends JFrame implements ActionListener {
     // MODIFIES: this
     // EFFECTS: displays window for exiting car's price
     private void doDisplayPrice(Car car, String endTime, String endDate) {
-        Double totalCost;
+        Double totalCost = car.getTotalCost(endTime, endDate, parkingList);
         Double discP = 0.00;
-        if (car.getHoursParked(endTime, endDate) == 0) {
-            totalCost = car.getRate();
-        } else {
-            totalCost = car.getHoursParked(endTime, endDate) * car.getRate();
-        }
-
         if (car.getHoursParked(endTime, endDate) >= parkingList.getMinDiscountHours()) {
-            totalCost = totalCost * ((100 - parkingList.getDiscountPercentage()) / 100);
             discP = parkingList.getDiscountPercentage();
         }
-
         makePanel();
 
         topPanel.setLayout(new GridLayout(2, 1));
@@ -411,15 +409,15 @@ public class GUI extends JFrame implements ActionListener {
         label3.setFont(font);
 
         fieldCarLicense = new JTextField(5);
-        fieldCarStartT = new JTextField(5);
-        fieldCarStartD = new JTextField(5);
+        fieldCarTime = new JTextField(5);
+        fieldCarDate = new JTextField(5);
 
         topPanel.add(label1);
         topPanel.add(fieldCarLicense);
         topPanel.add(label2);
-        topPanel.add(fieldCarStartT);
+        topPanel.add(fieldCarTime);
         topPanel.add(label3);
-        topPanel.add(fieldCarStartD);
+        topPanel.add(fieldCarDate);
     }
 
     // MODIFIES: this
@@ -591,6 +589,8 @@ public class GUI extends JFrame implements ActionListener {
                 doSaveParkingList();
             } else if (command.equals("afterNew")) {
                 actionAfterNew();
+            } else if (command.equals("backMainMenu")) {
+                mainMenu();
             } else {
                 actionMenu(command);
                 doSaveParkingList();
@@ -663,7 +663,7 @@ public class GUI extends JFrame implements ActionListener {
     // EFFECTS: adds car to parking list
     private void actionAddCar() {
         rate = parkingList.getRate();
-        Car car = new Car(fieldCarLicense.getText(), fieldCarStartT.getText(), fieldCarStartD.getText(), rate);
+        Car car = new Car(fieldCarLicense.getText(), fieldCarTime.getText(), fieldCarDate.getText(), rate);
         if (!car.validate()) {
             label = new JLabel("Invalid input! Please try again.");
             label.setFont(font);
@@ -695,17 +695,16 @@ public class GUI extends JFrame implements ActionListener {
     // EFFECTS: removes car from parking list
     private void actionRemoveCar() {
         String licenseNum = fieldCarLicense.getText();
-        Car car = new Car(fieldCarLicense.getText(), fieldCarStartT.getText(), fieldCarStartD.getText(), rate);
+        Car car = new Car(fieldCarLicense.getText(), fieldCarTime.getText(), fieldCarDate.getText(), rate);
         if ((!car.validate()) || (parkingList.getCar(licenseNum) == null)) {
             label = new JLabel("Invalid input! Please try again.");
             label.setFont(font);
             panel.add(label);
             makeFrame();
-            makeFrame();
         } else {
             car = parkingList.getCar(licenseNum);
             parkingList.removeCar(car);
-            doDisplayPrice(car, fieldCarStartT.getText(), fieldCarStartD.getText());
+            doDisplayPrice(car, fieldCarTime.getText(), fieldCarDate.getText());
         }
     }
 
@@ -713,15 +712,16 @@ public class GUI extends JFrame implements ActionListener {
     // EFFECTS: displays window showing hours parked
     private void actionParkedHour() {
         String licenseNum = fieldCarLicense.getText();
-        if (parkingList.getCar(licenseNum) == null) {
-            label = new JLabel("Sorry, there is no car with this license plate! Please try again.");
+        Car car = new Car(fieldCarLicense.getText(), fieldCarTime.getText(), fieldCarDate.getText(), rate);
+        if ((!car.validate()) || (parkingList.getCar(licenseNum) == null)) {
+            label = new JLabel("Invalid input! Please try again.");
             label.setFont(font);
             panel.add(label);
         } else {
             makePanel();
             panel.setLayout(new GridLayout(2,1));
-            Car car = parkingList.getCar(licenseNum);
-            Integer totalHours = car.getHoursParked(fieldCarStartT.getText(), fieldCarStartD.getText());
+            car = parkingList.getCar(licenseNum);
+            Integer totalHours = car.getHoursParked(fieldCarTime.getText(), fieldCarDate.getText());
             label = new JLabel("This car has been parked for " + totalHours + " hour(s).");
             label.setFont(font);
             panel.add(label);
@@ -733,25 +733,46 @@ public class GUI extends JFrame implements ActionListener {
     // MODIFIES: this
     // EFFECTS: sets rate to input
     private void actionSetRate() {
-        rate = Double.parseDouble(fieldRate.getText());
-        parkingList.setRate(rate);
-        doMenu();
+        try {
+            rate = Double.parseDouble(fieldRate.getText());
+            parkingList.setRate(rate);
+            doMenu();
+        } catch (Exception e) {
+            label = new JLabel("Invalid input! Please try again.");
+            label.setFont(font);
+            panel.add(label);
+            makeFrame();
+        }
     }
 
     // MODIFIES: this
     // EFFECTS: sets minimum hour(s) for discount to input
     private void actionSetMinHour() {
-        minDiscountHours = Integer.parseInt(fieldRate.getText());
-        parkingList.setMinDiscountHours(minDiscountHours);
-        doMenu();
+        try {
+            minDiscountHours = Integer.parseInt(fieldRate.getText());
+            parkingList.setMinDiscountHours(minDiscountHours);
+            doMenu();
+        } catch (Exception e) {
+            label = new JLabel("Invalid input! Please try again.");
+            label.setFont(font);
+            panel.add(label);
+            makeFrame();
+        }
     }
 
     // MODIFIES: this
     // EFFECTS: sets discount percentage to input
     private void actionSetDiscount() {
-        discountPercentage = Double.parseDouble(fieldRate.getText());
-        parkingList.setDiscountPercentage(discountPercentage);
-        doMenu();
+        try {
+            discountPercentage = Double.parseDouble(fieldRate.getText());
+            parkingList.setDiscountPercentage(discountPercentage);
+            doMenu();
+        } catch (Exception e) {
+            label = new JLabel("Invalid input! Please try again.");
+            label.setFont(font);
+            panel.add(label);
+            makeFrame();
+        }
     }
 
     // EFFECTS: plays sound from file
