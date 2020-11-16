@@ -57,7 +57,6 @@ public class Car implements Writable {
         return rate;
     }
 
-    // ASSUMES: the car already parked in the parking
     // EFFECTS: returns the number of hours passed since the car was parked
     public Integer getHoursParked(String endTime, String endDate) {
         int endHour = Integer.parseInt(endTime.substring(0, 2));
@@ -78,10 +77,10 @@ public class Car implements Writable {
                 totalHours = endHour - this.getStartHour() + (endDay - this.getStartDay()) * 24;
             }
         }
-
         return totalHours;
     }
 
+    // EFFECTS: returns the total cost for this car
     public Double getTotalCost(String endTime, String endDate, ParkingList parkingList) {
         Double totalCost;
         if (this.getHoursParked(endTime, endDate) == 0) {
@@ -95,6 +94,8 @@ public class Car implements Writable {
         return totalCost;
     }
 
+    // EFFECTS: returns true if the Date and Time are valid,
+    //          otherwise return false
     public boolean validate() {
         try {
             getStartHour();
