@@ -25,24 +25,24 @@ public class GUI extends JFrame implements ActionListener {
     private JPanel topPanel;
     private JPanel bottomPanel;
     private JLabel label;
-    JTextField fieldMaxCapacity;
-    JTextField fieldRate;
-    JTextField fieldMinHour;
-    JTextField fieldDiscount;
-    JTextField fieldCarLicense;
-    JTextField fieldCarTime;
-    JTextField fieldCarDate;
-    JButton buttonLeft;
-    JButton buttonRight;
-    JButton buttonEntry;
-    JButton buttonExit;
-    JButton buttonViewHour;
-    JButton buttonViewList;
-    JButton buttonChangeRate;
-    JButton buttonChangeMinHour;
-    JButton buttonChangeDiscount;
-    JButton buttonMainMenu;
-    JButton buttonContinue;
+    private JTextField fieldMaxCapacity;
+    private JTextField fieldRate;
+    private JTextField fieldMinHour;
+    private JTextField fieldDiscount;
+    private JTextField fieldCarLicense;
+    private JTextField fieldCarTime;
+    private JTextField fieldCarDate;
+    private JButton buttonLeft;
+    private JButton buttonRight;
+    private JButton buttonEntry;
+    private JButton buttonExit;
+    private JButton buttonViewHour;
+    private JButton buttonViewList;
+    private JButton buttonChangeRate;
+    private JButton buttonChangeMinHour;
+    private JButton buttonChangeDiscount;
+    private JButton buttonMainMenu;
+    private JButton buttonContinue;
 
     private static final String JSON_STORE = "./data/parkinglist.json";
     Font font = new Font("Verdana", Font.PLAIN, 30);
@@ -101,7 +101,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft = new JButton("Go Back");
         buttonLeft.setActionCommand("backMainMenu");
         buttonLeft.addActionListener(this);
-        buttonRight = new JButton("Continue");
+        buttonRight = new JButton("Create and Save Parking");
         buttonRight.setActionCommand("afterNew");
         buttonRight.addActionListener(this);
 
@@ -214,9 +214,9 @@ public class GUI extends JFrame implements ActionListener {
 
         buttonMainMenu = new JButton("Go to Main Menu");
         buttonsMenu();
-        
+
         panelAddMenu(label1, label2, label3, label4, label5, label6, label7, label8);
-        
+
         makeFrame();
 
     }
@@ -293,7 +293,7 @@ public class GUI extends JFrame implements ActionListener {
             buttonLeft.setActionCommand("menu");
             buttonLeft.addActionListener(this);
 
-            buttonRight = new JButton("Add Car");
+            buttonRight = new JButton("Add Car and Save Parking");
             buttonRight.setActionCommand("addCar");
             buttonRight.addActionListener(this);
 
@@ -320,7 +320,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
 
-        buttonRight = new JButton("Remove Car");
+        buttonRight = new JButton("Remove Car and Save Parking");
         buttonRight.setActionCommand("removeCar");
         buttonRight.addActionListener(this);
 
@@ -468,7 +468,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
 
-        buttonRight = new JButton("Change");
+        buttonRight = new JButton("Save Change");
         buttonRight.setActionCommand("setRate");
         buttonRight.addActionListener(this);
 
@@ -497,7 +497,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
 
-        buttonRight = new JButton("Change");
+        buttonRight = new JButton("Save Change");
         buttonRight.setActionCommand("setMinHour");
         buttonRight.addActionListener(this);
 
@@ -526,7 +526,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonLeft.setActionCommand("menu");
         buttonLeft.addActionListener(this);
 
-        buttonRight = new JButton("Change");
+        buttonRight = new JButton("Save Change");
         buttonRight.setActionCommand("setDiscount");
         buttonRight.addActionListener(this);
 
@@ -610,9 +610,7 @@ public class GUI extends JFrame implements ActionListener {
             doSaveParkingList();
             doMenu();
         } catch (Exception e) {
-            label = new JLabel("Invalid input! Please try again.");
-            label.setFont(font);
-            panel.add(label);
+            invalidInputLabelPanel();
             makeFrame();
         }
     }
@@ -665,9 +663,7 @@ public class GUI extends JFrame implements ActionListener {
         rate = parkingList.getRate();
         Car car = new Car(fieldCarLicense.getText(), fieldCarTime.getText(), fieldCarDate.getText(), rate);
         if (!car.validate()) {
-            label = new JLabel("Invalid input! Please try again.");
-            label.setFont(font);
-            panel.add(label);
+            invalidInputLabelPanel();
         } else {
             parkingList.addCar(car);
             makePanel();
@@ -697,9 +693,7 @@ public class GUI extends JFrame implements ActionListener {
         String licenseNum = fieldCarLicense.getText();
         Car car = new Car(fieldCarLicense.getText(), fieldCarTime.getText(), fieldCarDate.getText(), rate);
         if ((!car.validate()) || (parkingList.getCar(licenseNum) == null)) {
-            label = new JLabel("Invalid input! Please try again.");
-            label.setFont(font);
-            panel.add(label);
+            invalidInputLabelPanel();
             makeFrame();
         } else {
             car = parkingList.getCar(licenseNum);
@@ -714,9 +708,7 @@ public class GUI extends JFrame implements ActionListener {
         String licenseNum = fieldCarLicense.getText();
         Car car = new Car(fieldCarLicense.getText(), fieldCarTime.getText(), fieldCarDate.getText(), rate);
         if ((!car.validate()) || (parkingList.getCar(licenseNum) == null)) {
-            label = new JLabel("Invalid input! Please try again.");
-            label.setFont(font);
-            panel.add(label);
+            invalidInputLabelPanel();
         } else {
             makePanel();
             panel.setLayout(new GridLayout(2,1));
@@ -738,9 +730,7 @@ public class GUI extends JFrame implements ActionListener {
             parkingList.setRate(rate);
             doMenu();
         } catch (Exception e) {
-            label = new JLabel("Invalid input! Please try again.");
-            label.setFont(font);
-            panel.add(label);
+            invalidInputLabelPanel();
             makeFrame();
         }
     }
@@ -753,9 +743,7 @@ public class GUI extends JFrame implements ActionListener {
             parkingList.setMinDiscountHours(minDiscountHours);
             doMenu();
         } catch (Exception e) {
-            label = new JLabel("Invalid input! Please try again.");
-            label.setFont(font);
-            panel.add(label);
+            invalidInputLabelPanel();
             makeFrame();
         }
     }
@@ -768,11 +756,18 @@ public class GUI extends JFrame implements ActionListener {
             parkingList.setDiscountPercentage(discountPercentage);
             doMenu();
         } catch (Exception e) {
-            label = new JLabel("Invalid input! Please try again.");
-            label.setFont(font);
-            panel.add(label);
+            invalidInputLabelPanel();
             makeFrame();
         }
+    }
+
+    private void invalidInputLabelPanel() {
+        JLabel invalidInputLabel = new JLabel("Invalid Input! Please Try Again...");
+        invalidInputLabel.setFont(font);
+        invalidInputLabel.setForeground(Color.RED);
+        invalidInputLabel.setOpaque(true);
+        invalidInputLabel.setBackground(Color.WHITE);
+        panel.add(invalidInputLabel);
     }
 
     // EFFECTS: plays sound from file
