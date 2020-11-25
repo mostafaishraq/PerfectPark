@@ -90,26 +90,32 @@ class CarTest {
     }
 
     @Test
-    void testValidateStringsInValid() {
-        Car car1 = new Car("ABC123", "AA:AA", "10-10-2020", 5.00);
+    void testValidateTimeValuesInValid() {
+        Car car = new Car("ABC123", "AA:AA", "10-10-2020", 5.00);
         try {
-            car1.validate();
+            car.validate();
             fail("InvalidInputException should have been thrown.");
         } catch (InvalidInputException invalidInputException) {
             // expected
         }
+    }
 
-        Car car2 = new Car("ABC123", "10:10", "AA-AA-AAAA", 5.00);
+    @Test
+    void testValidateDateValuesInValid() {
+        Car car = new Car("ABC123", "10:10", "AA-AA-AAAA", 5.00);
         try {
-            car2.validate();
+            car.validate();
             fail("InvalidInputException should have been thrown.");
         } catch (InvalidInputException invalidInputException) {
             // expected
         }
+    }
 
-        Car car3 = new Car("ABC123", "10A10", "10A10A2020", 5.00);
+    @Test
+    void testValidateColonHyphenInValid() {
+        car = new Car("ABC123", "10A10", "10A10A2020", 5.00);
         try {
-            car3.validate();
+            car.validate();
             fail("InvalidInputException should have been thrown.");
         } catch (InvalidInputException invalidInputException) {
             // expected
