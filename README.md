@@ -42,6 +42,21 @@ hours for discount, and the discount percentage) to a file.
 - As a user, I want to be able to load the parking list (including its maximum capacity of parking, rate of charge, minimum 
 hours for discount, and the discount percentage) from the file. 
 
+##Phase 4: Task 2
+I have chosen the option that stated:
+"Test and design a class in your model package that is robust.  You must have at least one method that throws a checked 
+exception.  You must have one test for the case where the exception is expected and another where the exception 
+is not expected."
+The class with the robust design is the Car class. The method validate() in this class throws the InvalidInputException
+when the start time and date inputs are of an incorrect type or invalid format. The CarTest class has a test for the 
+case where the exception is thrown for invalid input and a test for the case where no exception is thrown. 
+
+##Phase 4: Task 3
+According to my UML class diagram, both ParkingList and Car classes implement the Writable interface. Also, from the 
+diagram, if we consider ParkingList to be the whole, Car is a part (aggregation relationship). If I had more time on 
+this project, I would refactor the code in such a way so that only ParkingList implements Writable. That would cause the
+classes to follow single responsibility principal. I would refactor it so that only parkingList overrides Writable's 
+methods. This would mean that there would be no arrow from Car to Writable on the UML diagram. 
 
 ##Citation:
 - Author: Paul Carter 

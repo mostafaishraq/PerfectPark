@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 //Represents a parking management application
-public class ParkApp {
+public class ParkAppConsoleBased {
     private static final String JSON_STORE = "./data/parkinglist.json";
     private ParkingList parkingList;
     private Scanner input;
@@ -23,7 +23,7 @@ public class ParkApp {
     private final JsonReader jsonReader;
 
     // EFFECTS: constructs parking list and runs the parking management application
-    public ParkApp() {
+    public ParkAppConsoleBased() {
         input = new Scanner(System.in);
         parkingList = new ParkingList(0, 0.00, 0, 0.00);
         jsonWriter = new JsonWriter(JSON_STORE);

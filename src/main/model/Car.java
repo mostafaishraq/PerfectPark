@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.InvalidInputException;
 import org.json.JSONObject;
 import persistence.Writable;
 
@@ -81,31 +82,35 @@ public class Car implements Writable {
     }
 
     // EFFECTS: returns the total cost for this car
-    public Double getTotalCost(String endTime, String endDate, ParkingList parkingList) {
+    public Double getTotalCost(String endTime, String endDate, int minDiscountHours, double discountPercentage) {
         Double totalCost;
         if (this.getHoursParked(endTime, endDate) == 0) {
             totalCost = this.getRate();
         } else {
             totalCost = this.getHoursParked(endTime, endDate) * this.getRate();
         }
-        if (this.getHoursParked(endTime, endDate) >= parkingList.getMinDiscountHours()) {
-            totalCost = totalCost * ((100 - parkingList.getDiscountPercentage()) / 100);
+        if (this.getHoursParked(endTime, endDate) >= minDiscountHours) {
+            totalCost = totalCost * ((100 - discountPercentage) / 100);
         }
         return totalCost;
     }
 
     // EFFECTS: returns true if the Date and Time are valid,
     //          otherwise return false
-    public boolean validate() {
+    public void validate() throws InvalidInputException {
         try {
             getStartHour();
             Integer.parseInt(startTime.substring(3, 5));
             getStartDay();
             Integer.parseInt(startDate.substring(0, 2));
             Integer.parseInt(startDate.substring(6, 10));
-            return true;
+            if (!(startTime.charAt(2) == ':')) {
+                if (!((startDate.charAt(2) == '-') && (startDate.charAt(5) == '-'))) {
+                    throw new InvalidInputException();
+                }
+            }
         } catch (Exception e) {
-            return false;
+            throw new InvalidInputException();
         }
     }
 
