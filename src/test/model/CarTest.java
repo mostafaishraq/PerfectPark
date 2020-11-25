@@ -112,8 +112,30 @@ class CarTest {
     }
 
     @Test
-    void testValidateColonHyphenInValid() {
-        car = new Car("ABC123", "10A10", "10A10A2020", 5.00);
+    void testValidateColonInValid() {
+        car = new Car("ABC123", "10A10", "10-10-2020", 5.00);
+        try {
+            car.validate();
+            fail("InvalidInputException should have been thrown.");
+        } catch (InvalidInputException invalidInputException) {
+            // expected
+        }
+    }
+
+    @Test
+    void testValidateFirstHyphenInValid() {
+        car = new Car("ABC123", "10-10", "10A10-2020", 5.00);
+        try {
+            car.validate();
+            fail("InvalidInputException should have been thrown.");
+        } catch (InvalidInputException invalidInputException) {
+            // expected
+        }
+    }
+
+    @Test
+    void testValidateSecondHyphenInValid() {
+        car = new Car("ABC123", "10-10", "10-10A2020", 5.00);
         try {
             car.validate();
             fail("InvalidInputException should have been thrown.");
