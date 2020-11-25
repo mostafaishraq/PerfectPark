@@ -104,10 +104,8 @@ public class Car implements Writable {
             getStartDay();
             Integer.parseInt(startDate.substring(0, 2));
             Integer.parseInt(startDate.substring(6, 10));
-            if (!(startTime.charAt(2) == ':')) {
-                if (!((startDate.charAt(2) == '-') && (startDate.charAt(5) == '-'))) {
-                    throw new InvalidInputException();
-                }
+            if (! ((startTime.charAt(2) == ':') && (startDate.charAt(2) == '-') && (startDate.charAt(5) == '-'))) {
+                throw new InvalidInputException();
             }
         } catch (Exception e) {
             throw new InvalidInputException();

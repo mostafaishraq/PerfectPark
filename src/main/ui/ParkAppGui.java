@@ -150,6 +150,9 @@ public class ParkAppGui extends JFrame implements ActionListener {
     private void doLoadParkingList() {
         try {
             parkingList = jsonReader.read();
+            rate = parkingList.getRate();
+            minDiscountHours = parkingList.getMinDiscountHours();
+            discountPercentage = parkingList.getDiscountPercentage();
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }
@@ -667,8 +670,6 @@ public class ParkAppGui extends JFrame implements ActionListener {
             car.validate();
             parkingList.addCar(car);
             makePanel();
-            topPanel = new JPanel(new GridLayout(2, 1));
-            bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
             label = new JLabel(fieldCarLicense.getText() + " has been added to a parking spot");
             label.setFont(font);
@@ -681,6 +682,7 @@ public class ParkAppGui extends JFrame implements ActionListener {
             bottomPanel.add(buttonContinue);
 
             panel.add(topPanel, BorderLayout.NORTH);
+            panel.add(bottomPanel, BorderLayout.SOUTH);
         } catch (InvalidInputException invalidInputException) {
             invalidInputLabelPanel();
         } finally {
