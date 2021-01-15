@@ -7,7 +7,7 @@ import persistence.Writable;
 import java.util.ArrayList;
 import java.util.List;
 
-// Represents a parking list having max size, rate of charge, min hours for discount,
+// Represents a parking list having maximum size, rate of charge, minimum hours for discount,
 // discount percentage and a collection of cars parked
 public class ParkingList implements Writable {
     private final List<Car> parkingList;    // list of parked cars
